@@ -1,0 +1,59 @@
+---
+title: "chromEvolCarexPlot"
+author: "Marcial Escudero"
+date: '2022-11-07'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(ape)
+library(phytools)
+
+mytree <- read.tree(file = "Carex.tree")
+cn <- read.csv(file = "chromEvol.csv", sep = ",")
+mytree
+cn
+cn[,2] <- as.numeric(cn[,2])
+## 0. format output
+  pdf('./CarexEvolCarexPlot.pdf', 6.69, 8.86)
+ 
+    par(mar = c(0.1, 0.1, 0.1, 0.1))
+    
+
+
+## 2. Paint branches
+mytree<-paintSubTree(mytree, node=as.numeric(findMRCA(mytree, tips=c("Carex_satsumensis|TAI|spm00005838","Carex_glossostigma|CHS|spm00007875"), type=c("node"))),stem=FALSE,state=1)
+
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_obtusifolia||spm00004428","Carex_subviridis||spm00004429"), type=c("node"))),stem=0.2,state=2)
+
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_concinna|MAN|NCBI_Kuzmina_2468","Carex_morrowii|JAP|spm00006680"), type=c("node"))),stem=0.2,state=4)
+
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_meyeriana|MON|spm00008024","Carex_doniana|CHS|spm00000047"), type=c("node"))),stem=0.2,state=5)
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_durieui|SPA|spm00004386","Carex_dimorpholepis|KOR|NCBI_Na_2916"), type=c("node"))),stem=0.2,state=5)
+
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_foetida|SWI|spm00000565","Carex_divisa|MRY|spm00002064"), type=c("node"))),stem=0.2,state=3)
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_arnellii|SWE|spm00003783","Carex_buxbaumii|ASK|spm00000765"), type=c("node"))),stem=0.2,state=3)
+mytree<-paintSubTree(mytree,node=as.numeric(findMRCA(mytree, tips=c("Carex_mairei|SPA|spm00004367","Carex_simensis|UGA|spm00000233"), type=c("node"))),stem=0.2,state=3)
+
+
+cols <- c("grey", "#2297E6", "#28E2E5","#CD0BBC", "#FF7518")
+names(cols)<-1:5
+
+plotSimmap(mytree,cols,type = "fan", fsize = 0.001, pts=F,lwd=1)
+
+cn2 <- cn[,2]
+names(cn2) <- cn[,1]
+## 3. add chromosome number
+phydataplot(
+  cn2/20, 
+  mytree, "s",
+  offset = 0.5, col = "black")
+
+
+dev.off()
+
+
+```
+
